@@ -22,9 +22,11 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/home/daftar-proposal', 'HomeController@daftar_proposal')->name('daftar-proposal');
 Route::post('/post/daftar-proposal', 'HomeController@daftar_proposal_post')->name('daftar-proposal-post');
 Route::get('/home/sempro', 'HomeController@sempro')->name('sempro');
-
 Route::get('/home/tahap', 'HomeController@tahap')->name('tahap');
-Route::get('/home/detail/jadwalsempro/{id}','HomeController@detail_jadwalsempro')->name('detail_jadwalsempro');
+Route::get('/home/bimbingan', 'HomeController@bimbingan')->name('bimbingan');
+Route::post('/home/bimbingan', 'HomeController@bimbingan_up')->name('bimbingan_up');
+Route::get('/home/cari-judul', 'HomeController@cari_judul')->name('cari_judul');
+
 
 
 //Dosen
@@ -33,6 +35,10 @@ Route::get('/home/datasempro', 'DosenController@datasempro')->name('datasempro')
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/datadaftarsempro/{id}','DosenController@datadaftarsempro')->name('datadaftarsempro');
 Route::post('/verifbimbingansempro','DosenController@datadaftarsempro_up')->name('datadaftarsempro_up');
+Route::get('/databimbingan','DosenController@bimbingan')->name('bimbingan_dosen');
+Route::get('/databimbingan/{id}','DosenController@bimbingan_id')->name('bimbingan_id');
+Route::get('/databimbingan-revisi/{id}','DosenController@bimbingan_revisi')->name('bimbingan_revisi');
+Route::put('/databimbingan-up/{id}','DosenController@bimbingan_up')->name('bimbingan_up_dosen');
 
 
 //kaprodi

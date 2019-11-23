@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\proposalsempro;
+use App\tahaptaskripsi;
+use App\bimbingan;
 use Auth;
 
 class HomeController extends Controller
@@ -61,54 +63,58 @@ class HomeController extends Controller
         return redirect()->back()->with('sukses','File Seminar Proposal Berhasil Ditambah...');
     }
     public function sempro(){
-        $sempro = DB::table('proposalsempro')
-        ->where('proposalsempro.id_user',Auth::user()->id)
-        ->join('semprojadwal','proposalsempro.id','=','semprojadwal.id_proposalsempro')
-        ->select('proposalsempro.*','semprojadwal.id as idSemprojadwal')
-        ->get();
+        $sempro = DB::table('proposalsempro')->where('id_user',Auth::user()->id)->get();
+        return view('sempro',compact('sempro'));
+    }
+    public function tahap(){
+
+            $tahap = tahaptaskripsi::where('tahaptaskripsi.id_user', '=', Auth::User()->id)->get();
+            // $tahap = DB::table('statustaskripsi')->where('statustaskripsi.id_user', '=', Auth::User()->id)->get();    
+
+        return view('mahasiswa/tahap',compact('tahap'));
+    }
+    public function bimbingan(){
+
+        $dosen = DB::table('proposalsempro')->where('proposalsempro.id_user', '=' ,Auth::User()->id )->get('id_dosen')->toArray();
+        $data = bimbingan::where('bimbingan.id_user', '=' , Auth::User()->id)->get();
 
         
-        $sempro1 = DB::table('proposalsempro')
-        ->where('proposalsempro.id_user',Auth::user()->id)
-        // ->join('semprojadwal','proposalsempro.id','=','semprojadwal.id_proposalsempro')
-        ->select('proposalsempro.*')
-        ->get();
-        
-        return view('sempro',compact('sempro','sempro1'));
+        return view('mahasiswa/bimbingan',compact('dosen','data'));
+    }
+    public function bimbingan_up(Request $request){
+        $request->validate([
+            'file' => 'required|mimes:pdf|max:10000',
+        ]);
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension();
+        $name = md5($file->getClientOriginalName());
+        $path = $file->move('file_bimbingan',$name.'.'.$extension);
 
+        $dosen = DB::table('proposalsempro')->where('proposalsempro.id_user', '=' ,Auth::User()->id )->get('id_dosen');
+        
+        $bimbingan = new bimbingan;
+        $bimbingan->file = $name.'.'.$extension;
+        $bimbingan->id_user = Auth::User()->id;
+        $bimbingan->id_dosen = $dosen[0]->id_dosen;
+
+        $bimbingan->save();
+
+        return redirect()->back()->with('sukses','File Revisi Berhasil Ditambah...');
+    }
+    public function cari_judul(){
+        
+            $data = DB::table('proposalsempro')
+            ->where('proposalsempro.status','=', 'Disetujui')
+            ->join('users as a','proposalsempro.id_user', '=', 'a.id')
+            ->join('users as b','proposalsempro.id_dosen', '=', 'b.id')
+            ->select('proposalsempro.*','a.name','a.nim', 'b.name as namaDosen')
+            ->paginate(10);
+
+      
+         return view('mahasiswa/cari_judul',compact('data'));
     }
     public function logout(){
         Auth::logout();
-        return redirect('/login');
-    }
-    public function detail_jadwalsempro($id){
-        $data = DB::table('semprojadwal')
-        ->where('id_proposalsempro',$id)
-        ->join('users as dosen1','semprojadwal.id_dosen1','=','dosen1.id')
-        ->join('users as dosen2','semprojadwal.id_dosen2','=','dosen2.id')
-        ->join('proposalsempro','semprojadwal.id_proposalsempro','=','proposalsempro.id')
-        ->join('ruang','semprojadwal.id_ruang','=','ruang.id')
-        ->join('waktu','semprojadwal.id_waktu','=','waktu.id')
-        ->select('semprojadwal.*','dosen1.name as namaDosen1','dosen2.name as namaDosen2','dosen1.nim as nimDosen1','dosen2.nim as nimDosen2','ruang.*','waktu.*')
-        ->get();
-
-        
-        $data2 = DB::table('proposalsempro')->where('proposalsempro.id',$id)
-        // ->join('users','proposalsempro.id_dosen','=','users.id')
-        ->join('users as p','proposalsempro.id_dosen','=','p.id')
-        ->join('users','proposalsempro.id_user','=','users.id')
-        ->select('proposalsempro.*','users.name','users.nim','p.name as nameDosen','p.nim as nimDosen')
-        ->get();
-        return view('mahasiswa.jadwalsempro',compact('data','data2'));
-
-
-    }
-    public function tahap(){
-        $tahap = DB::table('tahaptaskripsi')
-        ->where('id_user',Auth::user()->id)
-        ->get();
-        return view('mahasiswa.tahap',compact('tahap'));
+        return redirect()->back();
     }
 }
-
-

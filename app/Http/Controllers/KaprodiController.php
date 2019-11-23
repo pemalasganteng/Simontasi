@@ -7,7 +7,7 @@ use App\rwdetail;
 use App\semprojadwal;
 use App\ruang;
 use App\waktu;
-use App\tahaptaskripsi;
+
 class KaprodiController extends Controller
 {
     //
@@ -43,9 +43,7 @@ class KaprodiController extends Controller
             'penguji2' => 'required',
             'tanggal' => 'required',
             'id_user' => 'required'
-        ]);
-        $checker2 = DB::table('tahaptaskripsi')->where('id_user',$request->id_user)->get();
-
+        ]);        
         $explode = explode('|',$request->ruang);
         $insert = new semprojadwal;
         $insert->id_dosen1 = $request->penguji1;
@@ -55,7 +53,6 @@ class KaprodiController extends Controller
         $insert->id_waktu = $explode[1];
         $insert->id_user = $request->id_user;
         $insert->id_proposalsempro = $request->id_proposalsempro;
-        $insert->id_tahap = $checker2[0]->id;
         $insert->save();
         
         $checker = DB::table('semprojadwal')
@@ -67,13 +64,9 @@ class KaprodiController extends Controller
         $insert2->id_ruang = $explode[0];
         $insert2->id_waktu = $explode[1]; 
         $insert2->tanggal = date('Y-m-d', strtotime($request->tanggal));
-        $insert2->id_jadwal = $checker[0]->idSemprojadwal;
+        $insert2->id_user = $checker[0]->idSemprojadwal;
         $insert2->save();
 
-        $insert3 = tahaptaskripsi::where('tahaptaskripsi.id','=',$checker2[0]->id)->first();
-        $insert3->status_jadwalsempro = 'Terjadwal';
-        $insert3->id_semprojadwal = $checker[0]->idSemprojadwal;
-        $insert3->save();
         return redirect()->back()->with('sukses','Berhasil Dijadwalkan'); 
 
     }
@@ -89,7 +82,6 @@ class KaprodiController extends Controller
         ]);
         $insert = new ruang;
         $insert->nama_ruang = $request->nama_ruang;
-        $insert->save();
         return redirect()->back()->with('sukses','berhasil menambahkan ruangan');
 
     }

@@ -15,7 +15,6 @@ class AddTanggalToSemprojadwal extends Migration
     {
         Schema::table('semprojadwal', function (Blueprint $table) {
             $table->date('tanggal')->nullable();
-            
         });
     }
 

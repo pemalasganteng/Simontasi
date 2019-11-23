@@ -50,9 +50,19 @@
                                 <ul class="collapse">
                                     @if (Auth::user()->role == 1)
                                     <li><a href="{{route('datasempro')}}">Data Sempro</a></li>
+                                    <li><a href="{{route('bimbingan_dosen')}}">Data Bimbingan</a></li>
+                                    @endif
+                                    @if (Auth::user()->role == 2)
+                                    <li><a href="{{route('bimbingan_dosen')}}">Tawarkan Judul</a></li>
+                                    <li><a href="{{route('bimbingan_dosen')}}">Data Bimbingan</a></li>
+                                    <li><a href="{{route('bimbingan_dosen')}}">Data Bimbingan</a></li>
                                     @endif
                                     @if(Auth::user()->role == 3)
+                                    <li><a href="{{route('cari_judul')}} ">Pencarian Judul</a></li>
+                                    <li><a href="#">Penawaran Judul</a></li>
                                     <li><a href="{{route('sempro')}}">Status Pengajuan Proposal</a></li>
+                                    <li><a href="{{route('tahap')}}">Tahap</a></li>
+                                    <li><a href="{{route('bimbingan')}} ">Bimbingan</a></li>
                                     @endif
                                     
                                 </ul>

@@ -20,7 +20,7 @@
                                             <tbody>
                                           
                                                 <tr>
-                                                  
+                                                   
                                                     <td>1</td>
                                                     <td>Pengajuan Proposal Tugas Akhir / Skripsi</td>
                                                     <td>Tahap dimana Anda sudah mengajukan judul kepada calon dosen pembimbing dan mendapatkan persetujuan  </td>  
